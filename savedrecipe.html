@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Recipes</title>
+    <style>
+        /* Add some basic styling for better presentation */
+        
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .back-button {
+            background-color: rgb(166, 161, 161);
+            border: 1px solid #4ce76e;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .recipe {
+            border: 1px solid #3ee763;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .delete-button {
+            background-color: #ff4d4d;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Back button to go back to index.html -->
+<button class="back-button" onclick="goBack()">Home Page</button>
+
+<!-- Display saved recipes here -->
+<div id="savedRecipesContainer"></div>
+
+<script>
+    // Function to go back to index.html
+    function goBack() {
+        // Assuming index.html is in the same directory, change the path accordingly if needed
+        window.location.href = 'index.html';
+    }
+
+    // Function to display saved recipes
+    function displaySavedRecipes() {
+        const savedRecipes = JSON.parse(localStorage.getItem('savedRecipes')) || [];
+
+        // Get the container element where recipes will be displayed
+        const savedRecipesContainer = document.getElementById('savedRecipesContainer');
+
+        // Clear the container before displaying the updated list
+        savedRecipesContainer.innerHTML = '';
+
+        // Iterate through saved recipes and create HTML elements for each
+        savedRecipes.forEach(recipe => {
+            const recipeElement = document.createElement('div');
+            recipeElement.classList.add('recipe');
+
+            // Create HTML structure for each recipe, including a delete button
+            recipeElement.innerHTML = `
+                <h2>${recipe.name}</h2>
+                <p>ID: ${recipe.id}</p>
+                <p>Category: ${recipe.category}</p>
+                <p>Instructions: ${recipe.instructions}</p>
+                <button class="delete-button" onclick="deleteRecipe('${recipe.id}')">Delete</button>
+            `;
+
+            // Append the recipe element to the container
+            savedRecipesContainer.appendChild(recipeElement);
+        });
+    }
+
+    // Function to delete a recipe
+    function deleteRecipe(recipeId) {
+        let savedRecipes = JSON.parse(localStorage.getItem('savedRecipes')) || [];
+        
+        // Find the index of the recipe with the specified ID
+        const index = savedRecipes.findIndex(recipe => recipe.id === recipeId);
+        
+        // Remove the recipe from the array
+        if (index !== -1) {
+            savedRecipes.splice(index, 1);
+            
+            // Update the localStorage with the modified array
+            localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+            
+            // Re-display the updated list of saved recipes
+            displaySavedRecipes();
+        }
+    }
+
+    // Call the displaySavedRecipes function to initially display saved recipes
+    displaySavedRecipes();
+</script>
+
+</body>
+</html>
